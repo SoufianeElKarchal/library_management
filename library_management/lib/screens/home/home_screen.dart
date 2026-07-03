@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import '../auth/login_screen.dart';
+import 'admin_screen.dart';
 import 'books_screen.dart';
 import 'profile_screen.dart';
 import 'settings_screen.dart';
@@ -17,12 +18,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int currentIndex = 0;
 
-  final List<Widget> pages = const [
-    BooksScreen(),
-
-    ProfileScreen(),
-
-    SettingsScreen(),
+  List<Widget> get pages => [
+    const BooksScreen(),
+    const ProfileScreen(),
+    widget.role == "gerant" ? const AdminScreen() : const SettingsScreen(),
   ];
 
   @override
@@ -30,11 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Library Management"),
-
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-
             onPressed: () async {
               await AuthService().logout();
 
@@ -51,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
+        type: BottomNavigationBarType.fixed,
 
         onTap: (index) {
           setState(() {
@@ -58,28 +57,27 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
 
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: "Livres"),
+        items: [
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: "Livres",
+          ),
 
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil"),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: "Profil",
+          ),
 
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-
-            label: "Paramètres",
+            icon: Icon(
+              widget.role == "gerant"
+                  ? Icons.admin_panel_settings
+                  : Icons.settings,
+            ),
+            label: widget.role == "gerant" ? "Admin" : "Paramètres",
           ),
         ],
       ),
-
-      floatingActionButton: widget.role == "gerant"
-          ? FloatingActionButton(
-              onPressed: () {
-                // Ajouter un livre
-              },
-
-              child: const Icon(Icons.add),
-            )
-          : null,
     );
   }
 }
