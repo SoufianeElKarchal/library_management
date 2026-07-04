@@ -8,10 +8,11 @@ import 'screens/auth/login_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/books/book_details_screen.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Assure-toi d'avoir configuré Firebase
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -23,23 +24,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gestion Bibliothèque',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       // On définit la route initiale
       initialRoute: '/login',
       // Déclaration de toutes les routes nommées
       routes: {
-              '/login': (context) => const LoginScreen(),
-              '/register': (context) => const RegisterScreen(),
-              '/home': (context) => const HomeScreen(role: 'etudiant'), 
-              '/bookDetails': (context) => const BookDetailsScreen(),
-              // Nouvelles routes pour le gérant :
-              '/addBook': (context) => const AddBookScreen(),
-              '/manageBooks': (context) => const ManageBooksScreen(),
-              '/manageLoans': (context) => const ManageLoansScreen(),
-              '/statistics': (context) => const StatisticsScreen(),
-            },
+        '/login': (context) => const LoginScreen(),
+        '/register': (context) => const RegisterScreen(),
+        '/home': (context) => const HomeScreen(role: 'etudiant'),
+        '/bookDetails': (context) => const BookDetailsScreen(),
+        // Nouvelles routes pour le gérant :
+        '/addBook': (context) => const AddBookScreen(),
+        '/manageBooks': (context) => const ManageBooksScreen(),
+        '/manageLoans': (context) => const ManageLoansScreen(),
+        '/statistics': (context) => const StatisticsScreen(),
+      },
     );
   }
 }

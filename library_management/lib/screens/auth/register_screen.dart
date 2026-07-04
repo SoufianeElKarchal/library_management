@@ -21,116 +21,178 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Créer un compte"), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: nomController,
-              decoration: const InputDecoration(
-                labelText: "Nom",
-                border: OutlineInputBorder(),
-              ),
-            ),
+      backgroundColor: Colors.grey.shade100,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              children: [
+                const Icon(Icons.library_books, size: 90, color: Colors.blue),
 
-            const SizedBox(height: 15),
+                const SizedBox(height: 20),
 
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
-              ),
-            ),
+                const Text(
+                  "Créer un compte",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
 
-            const SizedBox(height: 15),
+                const SizedBox(height: 10),
 
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Mot de passe",
-                border: OutlineInputBorder(),
-              ),
-            ),
+                Text(
+                  "Rejoignez la bibliothèque",
+                  style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
+                ),
 
-            const SizedBox(height: 15),
+                const SizedBox(height: 35),
 
-            DropdownButtonFormField<String>(
-              value: role,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: "Rôle",
-              ),
-              items: const [
-                DropdownMenuItem(value: "etudiant", child: Text("Étudiant")),
-                DropdownMenuItem(value: "gerant", child: Text("Gérant")),
+                TextField(
+                  controller: nomController,
+                  decoration: InputDecoration(
+                    labelText: "Nom complet",
+                    prefixIcon: const Icon(Icons.person),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    prefixIcon: const Icon(Icons.email),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Mot de passe",
+                    prefixIcon: const Icon(Icons.lock),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                DropdownButtonFormField<String>(
+                  value: role,
+                  decoration: InputDecoration(
+                    labelText: "Rôle",
+                    prefixIcon: const Icon(Icons.badge),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: "etudiant",
+                      child: Text("Étudiant"),
+                    ),
+                    DropdownMenuItem(value: "gerant", child: Text("Gérant")),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      role = value!;
+                    });
+                  },
+                ),
+
+                const SizedBox(height: 30),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (nomController.text.isEmpty ||
+                          emailController.text.isEmpty ||
+                          passwordController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Veuillez remplir tous les champs"),
+                          ),
+                        );
+                        return;
+                      }
+
+                      String? result = await authService.register(
+                        nom: nomController.text.trim(),
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                        role: role,
+                      );
+
+                      if (result == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: Colors.green,
+                            content: Text("Compte créé avec succès"),
+                          ),
+                        );
+
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text(result)));
+                      }
+                    },
+                    child: const Text(
+                      "Créer un compte",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Vous avez déjà un compte ?"),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Se connecter",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
               ],
-              onChanged: (value) {
-                setState(() {
-                  role = value!;
-                });
-              },
             ),
-
-            const SizedBox(height: 25),
-
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (nomController.text.isEmpty ||
-                      emailController.text.isEmpty ||
-                      passwordController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Veuillez remplir tous les champs"),
-                      ),
-                    );
-                    return;
-                  }
-
-                  String? result = await authService.register(
-                    nom: nomController.text.trim(),
-                    email: emailController.text.trim(),
-                    password: passwordController.text.trim(),
-                    role: role,
-                  );
-
-                  if (result == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Compte créé avec succès")),
-                    );
-
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(result)));
-                  }
-                },
-                child: const Text("Créer un compte"),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            TextButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()),
-                );
-              },
-              child: const Text("J'ai déjà un compte"),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -54,52 +54,107 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Connexion"), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
+      backgroundColor: Colors.grey.shade100,
+
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+
+          child: Column(
+            children: [
+              const Icon(Icons.local_library, size: 90, color: Colors.blue),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "Gestion Bibliothèque",
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
-            ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Mot de passe",
-                border: OutlineInputBorder(),
+              Text(
+                "Connectez-vous à votre compte",
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
               ),
-            ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 40),
 
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: login,
-                child: const Text("Se connecter"),
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: "Email",
+                  prefixIcon: const Icon(Icons.email),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
               ),
-            ),
 
-            const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-            TextButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                );
-              },
-              child: const Text("Créer un compte"),
-            ),
-          ],
+              TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "Mot de passe",
+                  prefixIcon: const Icon(Icons.lock),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                width: double.infinity,
+                height: 50,
+
+                child: ElevatedButton(
+                  onPressed: login,
+
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+
+                  child: const Text(
+                    "Se connecter",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Vous n'avez pas de compte ?"),
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const RegisterScreen(),
+                        ),
+                      );
+                    },
+
+                    child: const Text(
+                      "Créer un compte",
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
